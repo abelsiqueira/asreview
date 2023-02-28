@@ -1,0 +1,75 @@
+name: Docker deployment
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'master'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: 'docker/asreview-lab/Dockerfile'
+            image_name: 'abelsiqueira/asreview'
+          - dockerfile: 'docker/asreview-cli/Dockerfile'
+            image_name: 'abelsiqueira/asreview-cli'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Install Python to get asreview version
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Install packages
+        run: |
+          pip install --no-cache-dir .
+      - name: Set asreview version environment variable
+        run: |
+          python -c 'from asreview._version import get_versions; v = get_versions()["version"]; print(f"ASREVIEW_VERSION={v}")' >> $GITHUB_ENV
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v4
+        with:
+          build-args: "ASREVIEW_VERSION=${{ env.ASREVIEW_VERSION }}"
+          context: .
+          file: ${{ matrix.Dockerfile }}
+          load: true
+          tags: ${{ matrix.image_name }}:test
+      - name: Test
+        run: |
+          docker run --rm ${{ matrix.image_name }}:test -h
+
+      - name: Docker meta
+        id: meta
+        if: github.event_name != 'pull_request'
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ matrix.image_name }}
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          build-args: "ASREVIEW_VERSION=${{ env.ASREVIEW_VERSION }}"
+          context: .
+          file: ${{ matrix.Dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
