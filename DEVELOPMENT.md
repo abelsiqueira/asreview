@@ -141,8 +141,8 @@ https://docs.docker.com/docker-hub/. Replace the version numbers below by the ve
 
 ASReview LAB
 ```
-docker build -t asreview/asreview docker/asreview-lab/.
-docker build -t asreview/asreview:1.0 docker/asreview-lab/.
+docker build -t asreview/asreview -f docker/asreview-lab/Dockerfile .
+docker build -t asreview/asreview:1.0 -f docker/asreview-lab/Dockerfile .
 docker push asreview/asreview
 docker push asreview/asreview:1.0
 ```
@@ -150,8 +150,8 @@ docker push asreview/asreview:1.0
 
 ASReview CLI
 ```
-docker build -t asreview/asreview-cli docker/asreview-cli/.
-docker build -t asreview/asreview-cli:1.0 docker/asreview-cli/.
+docker build -t asreview/asreview-cli -f docker/asreview-cli/Dockerfile .
+docker build -t asreview/asreview-cli:1.0 -f docker/asreview-cli/Dockerfile .
 docker push asreview/asreview-cli
 docker push asreview/asreview-cli:1.0
 ```
