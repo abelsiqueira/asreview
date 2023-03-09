@@ -21,10 +21,9 @@ app.json
 asreview/webapp/node_modules
 azuredeploy.json
 azuredeploy.parameters.json
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-DEVELOPMENT.md
 MANIFEST.in
-SECURITY.md
+*.md
+
+!README.md
 
 # .git is not ignored because we need the information for versioneer
