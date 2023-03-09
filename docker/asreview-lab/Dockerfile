@@ -9,7 +9,8 @@ RUN apt-get update \
     && apt-get install -y git npm \
     && pip3 install --upgrade pip setuptools \
     && python3 setup.py compile_assets \
-    && pip3 install --user .
+    && pip3 install --user . \
+    && pip3 install --user asreview-datatools asreview-insights
 
 # Second stage
 FROM python:3.8-slim
@@ -19,4 +20,4 @@ COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 ENV ASREVIEW_PATH=project_folder
 
-ENTRYPOINT ["asreview", "lab", "--ip", "0.0.0.0"]
+ENTRYPOINT ["asreview"]
