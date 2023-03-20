@@ -7,10 +7,10 @@ WORKDIR /app
 COPY . /app
 RUN apt-get update \
     && apt-get install -y git npm \
-    && pip3 install --upgrade pip setuptools \
-    && python3 setup.py compile_assets \
-    && pip3 install --user . \
-    && pip3 install --user asreview-datatools asreview-insights
+    && pip3 install --upgrade pip setuptools
+RUN python3 setup.py compile_assets
+RUN pip3 install --user .
+RUN pip3 install --user asreview-datatools asreview-insights
 
 # Second stage
 FROM python:3.8-slim
