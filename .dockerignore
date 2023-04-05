@@ -21,7 +21,9 @@ app.json
 asreview/webapp/node_modules
 azuredeploy.json
 azuredeploy.parameters.json
+Dockerfile
 MANIFEST.in
+*.Dockerfile
 *.md
 
 !README.md
