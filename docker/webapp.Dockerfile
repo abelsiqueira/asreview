@@ -1,16 +1,14 @@
 # First stage
-FROM python:3.8-slim AS builder
+FROM asreview/asreview-engine AS builder
 WORKDIR /app
 
 # Copy and build asreview
-# git is used by versioneer to define the project version
-COPY . /app
 RUN apt-get update \
-    && apt-get install -y git npm \
-    && pip3 install --upgrade pip setuptools \
+    && apt-get install -y --no-install-recommends npm \
+    && apt-get purge -y --auto-remove \
     && python3 setup.py compile_assets \
     && pip3 install --user . \
-    && pip3 install --user asreview-datatools asreview-insights asreview-makita asreview-wordcloud
+    && rm -rf /var/lib/apt/lists/*
 
 # Second stage
 FROM python:3.8-slim
@@ -22,4 +20,4 @@ ENV PATH=/root/.local/bin:$PATH
 ENV ASREVIEW_PATH=project_folder
 EXPOSE 5000
 
-ENTRYPOINT ["asreview"]
+ENTRYPOINT ["asreview", "lab"]
