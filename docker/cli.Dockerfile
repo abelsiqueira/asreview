@@ -1,5 +1,5 @@
 # First stage
-FROM asreview/asreview-engine AS builder
+FROM abelsiqueira/asreview-engine AS builder
 WORKDIR /app
 
 # Install other dependencies
