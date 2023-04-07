@@ -1,5 +1,5 @@
 # First stage
-FROM abelsiqueira/asreview-engine AS builder
+FROM ghcr.io/abelsiqueira/asreview-engine AS builder
 WORKDIR /app
 
 # Install other dependencies
